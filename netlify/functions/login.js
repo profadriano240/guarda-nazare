@@ -33,6 +33,6 @@ exports.handler = async (event) => {
     }
   } catch (err) {
     console.error(err);
-    return cors({ erro: 'Erro interno' }, 500);
+    return cors({ erro: 'Erro interno', detalhe: err.message, stack: err.stack }, 500);
   }
 };
