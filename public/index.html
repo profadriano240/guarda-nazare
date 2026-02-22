@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guarda de Nossa Senhora de Nazaré – Missões</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dark: #8B6914;
+    --deep: #0D0A05;
+    --dark: #1A1408;
+    --mid: #2C2010;
+    --surface: #231A0C;
+    --border: rgba(201,168,76,0.25);
+    --text: #EDE0C4;
+    --muted: #9A8B6C;
+    --green: #27AE60;
+    --red: #E74C3C;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--deep);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ══ LOGIN ══ */
+  #login-screen {
+    position: fixed; inset: 0; z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--deep);
+    background-image: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 70%);
+    padding: 1rem;
+  }
+  .login-box {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 100%; max-width: 380px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+    text-align: center;
+  }
+  .login-emblem {
+    width: 72px; height: 72px; margin: 0 auto 1.2rem;
+    background: radial-gradient(circle, var(--gold-light), var(--gold-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 0 40px rgba(201,168,76,0.4);
+  }
+  .login-box h2 { font-family:'Cinzel',serif; font-size:16px; color:var(--gold); margin-bottom:4px; }
+  .login-box .sub { font-size:11px; color:var(--muted); margin-bottom:1.5rem; letter-spacing:2px; }
+  .login-tabs { display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:1.2rem; }
+  .login-tab { flex:1; padding:8px; font-size:12px; cursor:pointer; background:none; border:none; color:var(--muted); font-family:'Cinzel',serif; letter-spacing:1px; transition:all .2s; }
+  .login-tab.active { background:rgba(201,168,76,0.15); color:var(--gold); }
+
+  /* ══ HEADER ══ */
+  header {
+    background: linear-gradient(135deg, var(--dark), var(--mid));
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-icon { width:38px; height:38px; background:radial-gradient(circle,var(--gold-light),var(--gold-dark)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 0 12px rgba(201,168,76,0.4); flex-shrink:0; }
+  .logo-text h1 { font-family:'Cinzel',serif; font-size:13px; color:var(--gold); }
+  .logo-text p { font-size:10px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; }
+  .header-right { display:flex; align-items:center; gap:0.75rem; }
+  .user-badge { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:5px 10px; font-size:11px; color:var(--gold); font-family:'Cinzel',serif; display:none; }
+  @media(min-width:480px){ .user-badge { display:block; } }
+  .btn-logout { background:none; border:1px solid rgba(231,76,60,0.4); color:var(--red); border-radius:6px; padding:5px 10px; font-size:11px; cursor:pointer; transition:all .2s; }
+  .btn-logout:hover { background:rgba(231,76,60,0.1); }
+
+  /* ══ LAYOUT ══ */
+  .app { display:flex; min-height:calc(100vh - 64px); }
+
+  /* ══ SIDEBAR – desktop ══ */
+  nav {
+    width: 210px; flex-shrink:0;
+    background: var(--dark);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    display: none;
+  }
+  @media(min-width:768px){ nav { display:block; } }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:10px 1.5rem; font-size:13px; cursor:pointer; transition:all .2s; color:var(--muted); border-left:3px solid transparent; }
+  .nav-item:hover { background:rgba(201,168,76,0.06); color:var(--text); }
+  .nav-item.active { background:rgba(201,168,76,0.1); color:var(--gold); border-left-color:var(--gold); }
+  .nav-item .icon { font-size:15px; width:18px; text-align:center; }
+
+  /* ══ BOTTOM NAV – mobile ══ */
+  .bottom-nav {
+    display: flex;
+    position: fixed; bottom:0; left:0; right:0; z-index:90;
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    height: 60px;
+  }
+  @media(min-width:768px){ .bottom-nav { display:none; } }
+  .bnav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; transition:all .2s; color:var(--muted); border:none; background:none; font-family:'Lato',sans-serif; }
+  .bnav-item .bicon { font-size:18px; }
+  .bnav-item .blabel { font-size:10px; letter-spacing:0.5px; }
+  .bnav-item.active { color:var(--gold); }
+
+  /* ══ MAIN ══ */
+  main {
+    flex:1; padding:1.5rem 1rem;
+    overflow-y:auto;
+    padding-bottom: 80px; /* espaço para bottom nav */
+  }
+  @media(min-width:768px){ main { padding:2rem; padding-bottom:2rem; } }
+
+  .page { display:none; }
+  .page.active { display:block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ══ COMPONENTES ══ */
+  .page-title { font-family:'Cinzel',serif; font-size:20px; color:var(--gold); margin-bottom:4px; }
+  .page-subtitle { font-size:12px; color:var(--muted); margin-bottom:1.5rem; }
+
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.2rem; margin-bottom:1.2rem; }
+  .card-title { font-family:'Cinzel',serif; font-size:12px; color:var(--gold); margin-bottom:1rem; letter-spacing:1px; text-transform:uppercase; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.75rem; margin-bottom:1.5rem; }
+  @media(min-width:600px){ .stats-grid { grid-template-columns:repeat(4,1fr); } }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; position:relative; overflow:hidden; }
+  .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--gold-dark),var(--gold-light)); }
+  .stat-value { font-family:'Cinzel',serif; font-size:26px; color:var(--gold); }
+  .stat-label { font-size:11px; color:var(--muted); margin-top:2px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr; gap:1rem; }
+  @media(min-width:600px){ .grid-2 { grid-template-columns:1fr 1fr; } }
+
+  /* ══ FORMS ══ */
+  .form-group { margin-bottom:1rem; }
+  label { display:block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  input, select, textarea { width:100%; background:var(--dark); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:10px 12px; font-size:14px; font-family:'Lato',sans-serif; transition:border-color .2s; outline:none; -webkit-appearance:none; }
+  input:focus, select:focus, textarea:focus { border-color:var(--gold); }
+  select option { background:var(--dark); }
+  textarea { resize:vertical; min-height:70px; }
+
+  /* ══ BUTTONS ══ */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; border:none; transition:all .2s; font-family:'Lato',sans-serif; }
+  .btn-primary { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--deep); }
+  .btn-primary:hover { filter:brightness(1.1); }
+  .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+  .btn-secondary { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .btn-secondary:hover { border-color:var(--gold); color:var(--gold); }
+  .btn-sm { padding:6px 12px; font-size:12px; }
+  .btn-block { width:100%; }
+
+  /* ══ TABLE ══ */
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { width:100%; border-collapse:collapse; font-size:13px; min-width:500px; }
+  th { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); text-align:left; padding:10px 10px; border-bottom:1px solid var(--border); white-space:nowrap; }
+  td { padding:11px 10px; border-bottom:1px solid rgba(201,168,76,0.07); vertical-align:middle; }
+  tr:hover td { background:rgba(201,168,76,0.03); }
+
+  /* ══ BADGE ══ */
+  .badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
+  .badge-gold { background:rgba(201,168,76,0.15); color:var(--gold); border:1px solid rgba(201,168,76,0.3); }
+  .badge-green { background:rgba(39,174,96,0.15); color:var(--green); border:1px solid rgba(39,174,96,0.3); }
+  .badge-red { background:rgba(231,76,60,0.15); color:var(--red); border:1px solid rgba(231,76,60,0.3); }
+  .badge-blue { background:rgba(26,82,118,0.2); color:#5DADE2; border:1px solid rgba(26,82,118,0.4); }
+  .badge-gray { background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid var(--border); }
+
+  /* ══ MODAL ══ */
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:200; align-items:flex-end; justify-content:center; padding:0; }
+  @media(min-width:600px){ .modal-bg { align-items:center; padding:1rem; } }
+  .modal-bg.open { display:flex; }
+  .modal {
+    background:var(--dark); border:1px solid var(--border);
+    width:100%; max-height:92vh; overflow-y:auto;
+    border-radius:16px 16px 0 0;
+    padding:1.5rem;
+    box-shadow:0 -8px 40px rgba(0,0,0,0.6);
+  }
+  @media(min-width:600px){
+    .modal { border-radius:16px; max-width:580px; }
+  }
+  .modal h3 { font-family:'Cinzel',serif; color:var(--gold); margin-bottom:1.2rem; font-size:16px; }
+  .modal-footer { display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.2rem; flex-wrap:wrap; }
+  .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 1rem; display:block; }
+  @media(min-width:600px){ .modal-handle { display:none; } }
+
+  /* ══ PRESENÇA ══ */
+  .presenca-row { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(201,168,76,0.07); gap:0.5rem; }
+  .presenca-info { display:flex; align-items:center; gap:10px; min-width:0; }
+  .avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-size:12px; color:var(--deep); font-weight:700; flex-shrink:0; }
+  .presenca-name { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .presenca-func { font-size:11px; color:var(--muted); }
+  .presenca-toggle { display:flex; gap:5px; flex-shrink:0; }
+  .toggle-btn { width:38px; height:38px; border-radius:8px; border:none; cursor:pointer; font-size:16px; transition:all .2s; display:flex; align-items:center; justify-content:center; }
+  .toggle-btn.present { background:rgba(39,174,96,0.2); border:2px solid rgba(39,174,96,0.5); color:var(--green); }
+  .toggle-btn.absent  { background:rgba(231,76,60,0.2); border:2px solid rgba(231,76,60,0.5); color:var(--red); }
+  .toggle-btn.inactive{ background:var(--surface); border:2px solid var(--border); color:var(--muted); }
+  .toggle-btn.inactive:hover { border-color:var(--gold); }
+
+  /* ══ CREDENCIAIS ══ */
+  .credential-box { background:rgba(201,168,76,0.06); border:1px solid var(--gold); border-radius:12px; padding:1.2rem; text-align:center; }
+  .cred-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .cred-value { font-family:'Cinzel',serif; font-size:20px; color:var(--gold); letter-spacing:4px; }
+
+  /* ══ TAGS ══ */
+  .tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:0.75rem; }
+  .tag { background:rgba(201,168,76,0.1); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:12px; display:flex; align-items:center; gap:6px; }
+  .tag .rm { cursor:pointer; color:var(--muted); font-size:14px; }
+  .tag .rm:hover { color:var(--red); }
+
+  /* ══ MISC ══ */
+  .divider { height:1px; background:var(--border); margin:1.2rem 0; }
+  .search-row { display:flex; gap:0.75rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+  .search-row input { flex:1; min-width:160px; }
+  .empty { text-align:center; padding:2.5rem 1rem; color:var(--muted); font-size:13px; }
+  .empty .ei { font-size:2.5rem; margin-bottom:0.75rem; opacity:0.4; display:block; }
+  .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--mid); border:1px solid var(--border); border-radius:10px; padding:10px 20px; font-size:13px; z-index:999; display:none; white-space:nowrap; }
+  @media(min-width:768px){ .toast { bottom:24px; } }
+  .toast.show { display:block; animation:fadeIn .3s ease; }
+  .spinner { display:inline-block; width:16px; height:16px; border:2px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin .6s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-overlay { position:fixed; inset:0; background:rgba(13,10,5,0.8); z-index:500; display:flex; align-items:center; justify-content:center; }
+  .loading-overlay.hide { display:none; }
+
+  /* ══ CARD MISSÃO MOBILE ══ */
+  .missao-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:1rem; margin-bottom:0.75rem;
+  }
+  .missao-card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; }
+  .missao-card-title { font-size:14px; font-weight:700; flex:1; }
+  .missao-card-info { font-size:12px; color:var(--muted); margin:6px 0; }
+  .missao-card-footer { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+
+  /* oculta table em mobile, mostra cards */
+  .desktop-table { display:none; }
+  .mobile-cards { display:block; }
+  @media(min-width:768px){
+    .desktop-table { display:block; }
+    .mobile-cards { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-emblem">🕊️</div>
+    <h2>Guarda de N. Sra. de Nazaré</h2>
+    <p class="sub">SISTEMA DE MISSÕES</p>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="setLoginType('coordenador')">Coordenador</button>
+      <button class="login-tab" onclick="setLoginType('lider')">Líder de Missão</button>
+    </div>
+    <div class="form-group" style="text-align:left">
+      <label>Usuário</label>
+      <input type="text" id="login-user" placeholder="Digite seu usuário" autocomplete="username" />
+    </div>
+    <div class="form-group" style="text-align:left">
+      <label>Senha</label>
+      <input type="password" id="login-pass" placeholder="Digite sua senha" autocomplete="current-password" />
+    </div>
+    <div id="login-error" style="color:var(--red);font-size:12px;margin-bottom:0.75rem;display:none">Credenciais inválidas.</div>
+    <button class="btn btn-primary btn-block" id="btn-login" onclick="doLogin()">✦ Entrar</button>
+  </div>
+</div>
+
+<!-- ══ LOADING ══ -->
+<div class="loading-overlay hide" id="loading"><div class="spinner" style="width:36px;height:36px;border-width:3px"></div></div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🕊️</div>
+    <div class="logo-text">
+      <h1>Guarda de N. Sra. de Nazaré</h1>
+      <p class="desktop-only">Sistema de Missões</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="user-badge" id="header-user">—</div>
+    <button class="btn-logout" onclick="doLogout()">Sair</button>
+  </div>
+</header>
+
+<div class="app">
+  <!-- Sidebar desktop -->
+  <nav id="sidebar"></nav>
+
+  <main>
+    <!-- ── DASHBOARD ── -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">⚜ Dashboard</div>
+      <div class="page-subtitle">Visão geral das missões e guardas</div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🗓 Próximas Missões</div>
+          <div id="dash-proximas"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Participação dos Guardas</div>
+          <div id="dash-participacao"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MISSÕES ── -->
+    <div class="page" id="page-missoes">
+      <div class="page-title">⚜ Missões</div>
+      <div class="page-subtitle">Cadastro e gerenciamento das missões</div>
+      <div class="search-row">
+        <input type="text" placeholder="🔍 Buscar missão..." oninput="renderMissoes(this.value)" />
+        <button class="btn btn-primary" onclick="abrirModalMissao()">+ Nova</button>
+      </div>
+      <!-- Desktop -->
+      <div class="desktop-table card" style="padding:0">
+        <div class="table-wrap">
+          <table><thead><tr>
+            <th>Comunidade</th><th>Data / Hora</th><th>Líder</th><th>Guardas</th><th>Status</th><th>Ações</th>
+          </tr></thead><tbody id="tbody-missoes"></tbody></table>
+        </div>
+      </div>
+      <!-- Mobile -->
+      <div class="mobile-cards" id="mobile-missoes"></div>
+    </div>
+
+    <!-- ── GUARDAS ── -->
+    <div class="page" id="page-guardas">
+      <div class="page-title">⚜ Guardas</div>
+      <div class="page-subtitle">Membros da Guarda de Nossa Senhora de Nazaré</div>
+      <div class="search-row">
+        <input type="text" placeholder="🔍 Buscar guarda..." oninput="renderGuardas(this.value)" />
+        <button class="btn btn-primary" onclick="openModal('modal-guarda')">+ Cadastrar</button>
+      </div>
+      <!-- Desktop -->
+      <div class="desktop-table card" style="padding:0">
+        <div class="table-wrap">
+          <table><thead><tr>
+            <th>Nome</th><th>Telefone</th><th>Missões</th><th>Presenças</th><th>Status</th><th>Ações</th>
+          </tr></thead><tbody id="tbody-guardas"></tbody></table>
+        </div>
+      </div>
+      <!-- Mobile -->
+      <div class="mobile-cards" id="mobile-guardas"></div>
+    </div>
+
+    <!-- ── PRESENÇA ── -->
+    <div class="page" id="page-presenca">
+      <div class="page-title">⚜ Registrar Presença</div>
+      <div class="page-subtitle" id="presenca-missao-info">—</div>
+      <div class="card">
+        <div class="card-title">📋 Lista de Guardas</div>
+        <div id="presenca-lista"></div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn btn-secondary btn-sm" onclick="marcarTodos(false)">✗ Todos Ausentes</button>
+          <button class="btn btn-secondary btn-sm" onclick="marcarTodos(true)">✓ Todos Presentes</button>
+          <button class="btn btn-primary" onclick="salvarPresenca()">💾 Salvar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RELATÓRIOS ── -->
+    <div class="page" id="page-relatorios">
+      <div class="page-title">⚜ Relatórios</div>
+      <div class="page-subtitle">Histórico de presenças e participações</div>
+      <div id="relatorios-content"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Bottom nav mobile -->
+<nav class="bottom-nav" id="bottom-nav"></nav>
+
+<!-- ══ MODAL: Nova Missão ══ -->
+<div class="modal-bg" id="modal-missao">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>📍 Nova Missão</h3>
+    <div class="form-group">
+      <label>Comunidade / Local *</label>
+      <input type="text" id="m-comunidade" placeholder="Ex: Comunidade São Pedro – Bairro da Paz" />
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Data *</label>
+        <input type="date" id="m-data" />
+      </div>
+      <div class="form-group">
+        <label>Horário *</label>
+        <input type="time" id="m-hora" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Líder da Missão *</label>
+      <select id="m-lider"><option value="">— Selecione —</option></select>
+    </div>
+    <div class="form-group">
+      <label>Função do Líder</label>
+      <input type="text" id="m-lider-funcao" placeholder="Ex: Coordenador, Cantor..." />
+    </div>
+    <div class="form-group">
+      <label>Adicionar Guardas</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="m-guarda-add" style="flex:1;min-width:140px"><option value="">— Selecione —</option></select>
+        <input type="text" id="m-guarda-funcao" placeholder="Função" style="max-width:130px;min-width:100px" />
+        <button class="btn btn-secondary btn-sm" onclick="addGuardaMissao()" style="white-space:nowrap">+ Add</button>
+      </div>
+    </div>
+    <div class="tag-list" id="m-guardas-lista"></div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="m-obs" placeholder="Informações adicionais..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-missao')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-salvar-missao" onclick="salvarMissao()">✦ Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Guarda ══ -->
+<div class="modal-bg" id="modal-guarda">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>👤 Cadastrar Guarda</h3>
+    <div class="form-group">
+      <label>Nome Completo *</label>
+      <input type="text" id="g-nome" placeholder="Nome do guarda" />
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Telefone / WhatsApp</label>
+        <input type="tel" id="g-tel" placeholder="(91) 9 9999-9999" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="g-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-guarda');clearGuardaForm()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-salvar-guarda" onclick="salvarGuarda()">✦ Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Credenciais ══ -->
+<div class="modal-bg" id="modal-credenciais">
+  <div class="modal" style="text-align:center">
+    <div class="modal-handle"></div>
+    <h3>✅ Missão Cadastrada!</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.5rem">Repasse as credenciais abaixo ao líder da missão.</p>
+    <div class="grid-2">
+      <div class="credential-box"><div class="cred-label">Login</div><div class="cred-value" id="cred-login">—</div></div>
+      <div class="credential-box"><div class="cred-label">Senha</div><div class="cred-value" id="cred-senha">—</div></div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:1rem">⚠️ Anote — a senha não pode ser recuperada.</p>
+    <div class="modal-footer" style="justify-content:center;margin-top:1rem">
+      <button class="btn btn-primary" onclick="closeModal('modal-credenciais')">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Detalhes ══ -->
+<div class="modal-bg" id="modal-detalhe">
+  <div class="modal" id="modal-detalhe-content"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+const API = ''; // mesmo domínio - Netlify Functions em /api/*
+let TOKEN = null;
+let currentUser = null;
+let missaoGuardas = [];
+let editGuardaId = null;
+
+// Cache
+let cacheGuardas = [];
+let cacheMissoes = [];
+
+// ══════════════════════════════════════════════
+//  API HELPER
+// ══════════════════════════════════════════════
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (TOKEN) opts.headers['Authorization'] = 'Bearer ' + TOKEN;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || 'Erro desconhecido');
+  return data;
+}
+
+function showLoading() { document.getElementById('loading').classList.remove('hide'); }
+function hideLoading() { document.getElementById('loading').classList.add('hide'); }
+function toast(msg, dur=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+// ══════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════
+let loginType = 'coordenador';
+function setLoginType(t) {
+  loginType = t;
+  document.querySelectorAll('.login-tab').forEach((el,i)=>{
+    el.classList.toggle('active', (i===0&&t==='coordenador')||(i===1&&t==='lider'));
+  });
+}
+
+async function doLogin() {
+  const login = document.getElementById('login-user').value.trim();
+  const senha = document.getElementById('login-pass').value.trim();
+  document.getElementById('login-error').style.display='none';
+  const btn = document.getElementById('btn-login');
+  btn.innerHTML='<span class="spinner"></span>'; btn.disabled=true;
+  try {
+    const data = await api('POST','/api/login',{ login, senha, tipo: loginType });
+    TOKEN = data.token;
+    currentUser = { type: data.tipo, name: data.nome, missaoId: data.missaoId };
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('header-user').textContent = data.nome;
+    buildNav();
+    if (currentUser.type === 'lider') {
+      navigate('presenca');
+      await loadPresencaMissao(currentUser.missaoId);
+    } else {
+      await loadAll();
+      navigate('dashboard');
+    }
+  } catch(e) {
+    document.getElementById('login-error').style.display='block';
+  } finally {
+    btn.innerHTML='✦ Entrar'; btn.disabled=false;
+  }
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+  TOKEN=null; currentUser=null; cacheGuardas=[]; cacheMissoes=[];
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+}
+
+async function loadAll() {
+  showLoading();
+  try {
+    [cacheGuardas, cacheMissoes] = await Promise.all([
+      api('GET','/api/guardas'),
+      api('GET','/api/missoes')
+    ]);
+
+  } finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════
+//  NAVEGAÇÃO
+// ══════════════════════════════════════════════
+const navItems = {
+  coordenador: [
+    {id:'dashboard', icon:'🏠', label:'Dashboard'},
+    {id:'missoes',   icon:'📍', label:'Missões'},
+    {id:'guardas',   icon:'👥', label:'Guardas'},
+    {id:'relatorios',icon:'📊', label:'Relatórios'},
+  ],
+  lider: [
+    {id:'presenca', icon:'✅', label:'Presença'},
+  ]
+};
+
+function buildNav() {
+  const items = navItems[currentUser.type] || [];
+  document.getElementById('sidebar').innerHTML = items.map(n=>`
+    <div class="nav-item" id="nav-${n.id}" onclick="navigate('${n.id}')">
+      <span class="icon">${n.icon}</span>${n.label}
+    </div>`).join('');
+  document.getElementById('bottom-nav').innerHTML = items.map(n=>`
+    <button class="bnav-item" id="bnav-${n.id}" onclick="navigate('${n.id}')">
+      <span class="bicon">${n.icon}</span>
+      <span class="blabel">${n.label}</span>
+    </button>`).join('');
+}
+
+async function navigate(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item,.bnav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const nav = document.getElementById('nav-'+id);
+  const bnav = document.getElementById('bnav-'+id);
+  if(nav) nav.classList.add('active');
+  if(bnav) bnav.classList.add('active');
+  window.scrollTo(0,0);
+
+  if(id==='missoes') renderMissoes();
+  if(id==='guardas') renderGuardas();
+  if(id==='dashboard') renderDashboard();
+  if(id==='relatorios') await renderRelatorios();
+}
+
+// ══════════════════════════════════════════════
+//  UTILITÁRIOS
+// ══════════════════════════════════════════════
+function iniciais(nome) { return (nome||'').split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase(); }
+function formatData(d) { if(!d) return '—'; const [y,m,dia]=d.split('T')[0].split('-'); return `${dia}/${m}/${y}`; }
+function statusMissao(m) {
+  const hoje = new Date().toISOString().split('T')[0];
+  const data = (m.data||'').split('T')[0];
+  if(data < hoje) return {label:'Concluída',cls:'badge-green'};
+  if(data === hoje) return {label:'Hoje',cls:'badge-gold'};
+  return {label:'Agendada',cls:'badge-blue'};
+}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════
+function renderDashboard() {
+  const hoje = new Date().toISOString().split('T')[0];
+  const ativos = cacheGuardas.filter(g=>g.status==='ativo').length;
+  const futuras = cacheMissoes.filter(m=>(m.data||'').split('T')[0]>=hoje).length;
+  let totalP=0, totalT=0;
+  cacheMissoes.forEach(m=>{
+    if(m.presencas) Object.values(m.presencas).forEach(v=>{ totalT++; if(v) totalP++; });
+  });
+  const taxa = totalT>0 ? Math.round(totalP/totalT*100) : 0;
+
+  document.getElementById('stats-grid').innerHTML = [
+    [cacheMissoes.length,'Total de Missões'],
+    [futuras,'Missões Agendadas'],
+    [ativos,'Guardas Ativos'],
+    [taxa+'%','Taxa de Presença']
+  ].map(([v,l])=>`<div class="stat-card"><div class="stat-value">${v}</div><div class="stat-label">${l}</div></div>`).join('');
+
+  const prox = cacheMissoes.filter(m=>(m.data||'').split('T')[0]>=hoje).slice(0,4);
+  document.getElementById('dash-proximas').innerHTML = prox.length ? prox.map(m=>{
+    const st=statusMissao(m);
+    return `<div style="padding:9px 0;border-bottom:1px solid rgba(201,168,76,0.08)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span style="font-size:13px;font-weight:700;flex:1">${m.comunidade}</span>
+        <span class="badge ${st.cls}">${st.label}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">${formatData(m.data)} às ${(m.hora||'').slice(0,5)} · ${m.lider_nome||'—'}</div>
+    </div>`;
+  }).join('') : '<div class="empty"><span class="ei">📅</span>Nenhuma missão agendada</div>';
+
+  const part = cacheGuardas.map(g=>{
+    let p=0,t=0;
+    cacheMissoes.forEach(m=>{
+      const inM = m.lider_id===g.id || (m.guardas||[]).find(gm=>gm.id===g.id);
+      if(inM && m.presencas && m.presencas[g.id]!==undefined){ t++; if(m.presencas[g.id]) p++; }
+    });
+    return {...g,p,t};
+  }).filter(g=>g.t>0).slice(0,5);
+
+  document.getElementById('dash-participacao').innerHTML = part.length ? part.map(g=>`
+    <div style="padding:9px 0;border-bottom:1px solid rgba(201,168,76,0.08)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px">${g.nome}</span>
+        <span style="font-size:12px;color:var(--gold)">${g.p}/${g.t}</span>
+      </div>
+      <div style="height:4px;background:var(--mid);border-radius:2px">
+        <div style="height:4px;background:var(--gold);border-radius:2px;width:${g.t>0?Math.round(g.p/g.t*100):0}%"></div>
+      </div>
+    </div>`).join('') : '<div class="empty"><span class="ei">📊</span>Sem dados de presença ainda</div>';
+}
+
+// ══════════════════════════════════════════════
+//  GUARDAS
+// ══════════════════════════════════════════════
+function renderGuardas(filtro='') {
+  const lista = cacheGuardas.filter(g=>!filtro || g.nome.toLowerCase().includes(filtro.toLowerCase()));
+
+  // Desktop table
+  document.getElementById('tbody-guardas').innerHTML = lista.map(g=>{
+    let m=0,p=0;
+    cacheMissoes.forEach(ms=>{
+      const inM=ms.lider_id===g.id||(ms.guardas||[]).find(gm=>gm.id===g.id);
+      if(inM){ m++; if(ms.presencas&&ms.presencas[g.id]) p++; }
+    });
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div class="avatar" style="width:30px;height:30px;font-size:11px">${iniciais(g.nome)}</div>${g.nome}
+      </div></td>
+      <td style="color:var(--muted)">${g.telefone||'—'}</td>
+      <td>${m}</td><td>${p}</td>
+      <td><span class="badge ${g.status==='ativo'?'badge-green':'badge-gray'}">${g.status}</span></td>
+      <td><button class="btn btn-secondary btn-sm" onclick="editarGuarda(${g.id})">Editar</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty">Nenhum guarda encontrado</td></tr>';
+
+  // Mobile cards
+  document.getElementById('mobile-guardas').innerHTML = lista.map(g=>`
+    <div class="missao-card">
+      <div class="missao-card-top">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div class="avatar">${iniciais(g.nome)}</div>
+          <div>
+            <div class="missao-card-title">${g.nome}</div>
+            <div class="missao-card-info">${g.telefone||'Sem telefone'}</div>
+          </div>
+        </div>
+        <span class="badge ${g.status==='ativo'?'badge-green':'badge-gray'}">${g.status}</span>
+      </div>
+      <div class="missao-card-footer">
+        <button class="btn btn-secondary btn-sm" onclick="editarGuarda(${g.id})">Editar</button>
+      </div>
+    </div>`).join('') || '<div class="empty"><span class="ei">👥</span>Nenhum guarda encontrado</div>';
+}
+
+async function salvarGuarda() {
+  const nome = document.getElementById('g-nome').value.trim();
+  const telefone = document.getElementById('g-tel').value.trim();
+  const status = document.getElementById('g-status').value;
+  if(!nome) return toast('⚠️ Informe o nome do guarda');
+  const btn = document.getElementById('btn-salvar-guarda');
+  btn.innerHTML='<span class="spinner"></span>'; btn.disabled=true;
+  try {
+    if(editGuardaId) {
+      const updated = await api('PUT',`/api/guardas/${editGuardaId}`,{nome,telefone,status});
+      const idx = cacheGuardas.findIndex(g=>g.id===editGuardaId);
+      if(idx>=0) cacheGuardas[idx]=updated;
+      toast('✅ Guarda atualizado');
+    } else {
+      const novo = await api('POST','/api/guardas',{nome,telefone,status});
+      cacheGuardas.push(novo);
+      toast('✅ Guarda cadastrado');
+    }
+    closeModal('modal-guarda'); clearGuardaForm(); renderGuardas();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { btn.innerHTML='✦ Salvar'; btn.disabled=false; }
+}
+
+function editarGuarda(id) {
+  const g = cacheGuardas.find(g=>g.id===id);
+  if(!g) return;
+  editGuardaId = id;
+  document.getElementById('g-nome').value = g.nome;
+  document.getElementById('g-tel').value = g.telefone||'';
+  document.getElementById('g-status').value = g.status;
+  document.querySelector('#modal-guarda h3').textContent = '👤 Editar Guarda';
+  openModal('modal-guarda');
+}
+
+function clearGuardaForm() {
+  editGuardaId=null;
+  document.getElementById('g-nome').value='';
+  document.getElementById('g-tel').value='';
+  document.getElementById('g-status').value='ativo';
+  document.querySelector('#modal-guarda h3').textContent = '👤 Cadastrar Guarda';
+}
+
+// ══════════════════════════════════════════════
+//  MISSÕES
+// ══════════════════════════════════════════════
+function populaSelectsGuardas() {
+  const ativos = cacheGuardas.filter(g=>g.status==='ativo');
+  const opts = ativos.map(g=>`<option value="${g.id}">${g.nome}</option>`).join('');
+  document.getElementById('m-lider').innerHTML = '<option value="">— Selecione —</option>'+opts;
+  document.getElementById('m-guarda-add').innerHTML = '<option value="">— Selecione —</option>'+opts;
+}
+
+function abrirModalMissao() { populaSelectsGuardas(); missaoGuardas=[]; renderMissaoTags(); openModal('modal-missao'); }
+
+function addGuardaMissao() {
+  const id = +document.getElementById('m-guarda-add').value;
+  if(!id) return;
+  if(missaoGuardas.find(g=>g.id===id)) return toast('⚠️ Guarda já adicionado');
+  const g = cacheGuardas.find(g=>g.id===id);
+  const funcao = document.getElementById('m-guarda-funcao').value.trim();
+  missaoGuardas.push({id, nome:g.nome, funcao});
+  document.getElementById('m-guarda-add').value='';
+  document.getElementById('m-guarda-funcao').value='';
+  renderMissaoTags();
+}
+
+function renderMissaoTags() {
+  document.getElementById('m-guardas-lista').innerHTML = missaoGuardas.map(g=>`
+    <div class="tag">${g.nome}${g.funcao?` <span style="color:var(--muted)">· ${g.funcao}</span>`:''}
+      <span class="rm" onclick="removeGuardaMissao(${g.id})">×</span>
+    </div>`).join('');
+}
+
+function removeGuardaMissao(id) { missaoGuardas=missaoGuardas.filter(g=>g.id!==id); renderMissaoTags(); }
+
+async function salvarMissao() {
+  const comunidade = document.getElementById('m-comunidade').value.trim();
+  const data = document.getElementById('m-data').value;
+  const hora = document.getElementById('m-hora').value;
+  const lider_id = +document.getElementById('m-lider').value;
+  const lider_funcao = document.getElementById('m-lider-funcao').value.trim();
+  const observacoes = document.getElementById('m-obs').value.trim();
+  if(!comunidade||!data||!hora||!lider_id) return toast('⚠️ Preencha os campos obrigatórios');
+
+  const btn = document.getElementById('btn-salvar-missao');
+  btn.innerHTML='<span class="spinner"></span>'; btn.disabled=true;
+  try {
+    const nova = await api('POST','/api/missoes',{
+      comunidade, data, hora, lider_id, lider_funcao, observacoes,
+      guardas: missaoGuardas.map(g=>({id:g.id, funcao:g.funcao}))
+    });
+    cacheMissoes.unshift(nova);
+    closeModal('modal-missao');
+    // limpa form
+    ['m-comunidade','m-data','m-hora','m-lider-funcao','m-obs'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('m-lider').value='';
+    missaoGuardas=[]; renderMissaoTags();
+    // mostra credenciais
+    document.getElementById('cred-login').textContent = nova.login;
+    document.getElementById('cred-senha').textContent = nova.senha;
+    openModal('modal-credenciais');
+    renderMissoes();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { btn.innerHTML='✦ Salvar'; btn.disabled=false; }
+}
+
+function renderMissoes(filtro='') {
+  const lista = cacheMissoes.filter(m=>!filtro||m.comunidade.toLowerCase().includes(filtro.toLowerCase()));
+
+  // Desktop
+  document.getElementById('tbody-missoes').innerHTML = lista.map(m=>{
+    const st=statusMissao(m);
+    const total=(m.guardas?.length||0)+1;
+    return `<tr>
+      <td><strong>${m.comunidade}</strong></td>
+      <td>${formatData(m.data)} <span style="color:var(--muted)">${(m.hora||'').slice(0,5)}</span></td>
+      <td>${m.lider_nome||'—'}</td>
+      <td><span class="badge badge-gray">${total} guarda${total!==1?'s':''}</span></td>
+      <td><span class="badge ${st.cls}">${st.label}</span></td>
+      <td style="display:flex;gap:5px">
+        <button class="btn btn-secondary btn-sm" onclick="verDetalhes(${m.id})">Detalhes</button>
+        <button class="btn btn-secondary btn-sm" title="Ver credenciais" onclick="verCredenciais(${m.id})">🔑</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty">Nenhuma missão encontrada</td></tr>';
+
+  // Mobile
+  document.getElementById('mobile-missoes').innerHTML = lista.map(m=>{
+    const st=statusMissao(m);
+    const total=(m.guardas?.length||0)+1;
+    return `<div class="missao-card">
+      <div class="missao-card-top">
+        <div class="missao-card-title">${m.comunidade}</div>
+        <span class="badge ${st.cls}">${st.label}</span>
+      </div>
+      <div class="missao-card-info">📅 ${formatData(m.data)} às ${(m.hora||'').slice(0,5)}</div>
+      <div class="missao-card-info">👤 ${m.lider_nome||'—'} · ${total} guarda${total!==1?'s':''}</div>
+      <div class="missao-card-footer">
+        <button class="btn btn-secondary btn-sm" onclick="verDetalhes(${m.id})">Detalhes</button>
+        <button class="btn btn-secondary btn-sm" onclick="verCredenciais(${m.id})">🔑 Credenciais</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty"><span class="ei">📍</span>Nenhuma missão encontrada</div>';
+}
+
+function verCredenciais(id) {
+  const m = cacheMissoes.find(m=>m.id===id);
+  if(!m) return;
+  document.getElementById('cred-login').textContent = m.login;
+  document.getElementById('cred-senha').textContent = m.senha;
+  openModal('modal-credenciais');
+}
+
+function verDetalhes(id) {
+  const m = cacheMissoes.find(m=>m.id===id);
+  if(!m) return;
+  const lider = cacheGuardas.find(g=>g.id===m.lider_id);
+  const st = statusMissao(m);
+  const todos = [
+    {g:lider, funcao:m.lider_funcao, isLider:true},
+    ...(m.guardas||[]).map(gm=>({g:cacheGuardas.find(g=>g.id===gm.id), funcao:gm.funcao, isLider:false}))
+  ];
+  const guardasHtml = todos.map(({g,funcao,isLider})=>{
+    if(!g) return '';
+    const pres=m.presencas?.[g.id];
+    const presHtml = pres===true ? '<span class="badge badge-green">✓ Presente</span>'
+      : pres===false ? '<span class="badge badge-red">✗ Ausente</span>'
+      : '<span class="badge badge-gray">Pendente</span>';
+    return `<div class="presenca-row">
+      <div class="presenca-info">
+        <div class="avatar">${iniciais(g.nome)}</div>
+        <div>
+          <div class="presenca-name">${g.nome}${isLider?' <span class="badge badge-gold" style="margin-left:5px">Líder</span>':''}</div>
+          <div class="presenca-func">${funcao||'—'}</div>
+        </div>
+      </div>${presHtml}
+    </div>`;
+  }).join('');
+
+  document.getElementById('modal-detalhe-content').innerHTML = `
+    <div class="modal-handle"></div>
+    <h3>📍 ${m.comunidade}</h3>
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center">
+      <span class="badge ${st.cls}">${st.label}</span>
+      <span style="font-size:12px;color:var(--muted)">📅 ${formatData(m.data)} às ${(m.hora||'').slice(0,5)}</span>
+    </div>
+    <div class="card-title">Guardas da Missão</div>
+    ${guardasHtml}
+    ${m.observacoes?`<div class="divider"></div><div style="font-size:13px;color:var(--muted)">📝 ${m.observacoes}</div>`:''}
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detalhe')">Fechar</button>
+    </div>`;
+  openModal('modal-detalhe');
+}
+
+// ══════════════════════════════════════════════
+//  PRESENÇA
+// ══════════════════════════════════════════════
+let presencaAtual = {}; // { guardaId: true/false/undefined }
+let missaoAtual = null;
+
+async function loadPresencaMissao(mId) {
+  showLoading();
+  try {
+    const m = await api('GET',`/api/missoes/${mId}`);
+    missaoAtual = m;
+    presencaAtual = { ...m.presencas };
+
+    document.getElementById('presenca-missao-info').textContent =
+      `${m.comunidade} · ${formatData(m.data)} às ${(m.hora||'').slice(0,5)}`;
+
+    const lider = { id: m.lider_id, nome: m.lider_nome, funcao: m.lider_funcao, isLider: true };
+    const todos = [lider, ...(m.guardas||[]).map(g=>({...g, isLider:false}))];
+
+    document.getElementById('presenca-lista').innerHTML = todos.map(g=>g?.id ? `
+      <div class="presenca-row">
+        <div class="presenca-info">
+          <div class="avatar">${iniciais(g.nome||'')}</div>
+          <div style="min-width:0">
+            <div class="presenca-name">${g.nome||'—'}${g.isLider?' <span class="badge badge-gold" style="margin-left:5px">Líder</span>':''}</div>
+            <div class="presenca-func">${g.funcao||'—'}</div>
+          </div>
+        </div>
+        <div class="presenca-toggle">
+          <button class="toggle-btn inactive" id="btn-p-${g.id}" onclick="setPresenca(${g.id},true)">✓</button>
+          <button class="toggle-btn inactive" id="btn-a-${g.id}" onclick="setPresenca(${g.id},false)">✗</button>
+        </div>
+      </div>` : '').join('');
+
+    todos.filter(g=>g?.id).forEach(g=>atualizaBotoes(g.id));
+  } catch(e) { toast('❌ Erro ao carregar missão: '+e.message); }
+  finally { hideLoading(); }
+}
+
+function setPresenca(gId, val) {
+  presencaAtual[gId] = presencaAtual[gId]===val ? undefined : val;
+  atualizaBotoes(gId);
+}
+
+function atualizaBotoes(gId) {
+  const val = presencaAtual[gId];
+  const bp = document.getElementById(`btn-p-${gId}`);
+  const ba = document.getElementById(`btn-a-${gId}`);
+  if(!bp||!ba) return;
+  bp.className = 'toggle-btn ' + (val===true?'present':'inactive');
+  ba.className = 'toggle-btn ' + (val===false?'absent':'inactive');
+}
+
+function marcarTodos(val) {
+  if(!missaoAtual) return;
+  const todos = [missaoAtual.lider_id, ...(missaoAtual.guardas||[]).map(g=>g.id)];
+  todos.forEach(id=>{ presencaAtual[id]=val; atualizaBotoes(id); });
+}
+
+async function salvarPresenca() {
+  if(!missaoAtual) return;
+  const todos = [missaoAtual.lider_id, ...(missaoAtual.guardas||[]).map(g=>g.id)];
+  const pend = todos.filter(id=>presencaAtual[id]===undefined||presencaAtual[id]===null);
+  if(pend.length>0 && !confirm(`${pend.length} guarda(s) sem presença. Salvar assim mesmo?`)) return;
+
+  const payload = {};
+  todos.forEach(id=>{ if(presencaAtual[id]!==undefined) payload[id]=presencaAtual[id]; });
+
+  showLoading();
+  try {
+    await api('POST',`/api/presencas/${missaoAtual.id}`,{presencas:payload});
+    toast('✅ Presença salva com sucesso!');
+  } catch(e) { toast('❌ Erro ao salvar: '+e.message); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════
+//  RELATÓRIOS
+// ══════════════════════════════════════════════
+async function renderRelatorios() {
+  showLoading();
+  try {
+    const rel = await api('GET','/api/relatorio');
+    const rows = cacheMissoes.map(m=>{
+      const todos = [(m.lider_id), ...(m.guardas||[]).map(g=>g.id)];
+      const total=todos.length;
+      const pres=todos.filter(id=>m.presencas?.[id]===true).length;
+      const pct=total>0?Math.round(pres/total*100):0;
+      const st=statusMissao(m);
+      return {m,total,pres,pct,st};
+    });
+
+    document.getElementById('relatorios-content').innerHTML = `
+      <!-- Desktop table -->
+      <div class="desktop-table card" style="padding:0">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Comunidade</th><th>Data</th><th>Total</th><th>Presentes</th><th>% Presença</th><th>Status</th></tr></thead>
+          <tbody>${rows.map(({m,total,pres,pct,st})=>`<tr>
+            <td><strong>${m.comunidade}</strong></td>
+            <td>${formatData(m.data)}</td>
+            <td>${total}</td><td>${pres}</td>
+            <td><div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:5px;background:var(--mid);border-radius:3px;min-width:50px">
+                <div style="height:5px;background:var(--gold);border-radius:3px;width:${pct}%"></div>
+              </div><span style="font-size:12px;color:var(--gold)">${pct}%</span>
+            </div></td>
+            <td><span class="badge ${st.cls}">${st.label}</span></td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+      </div>
+      <!-- Mobile cards -->
+      <div class="mobile-cards">
+        ${rows.map(({m,total,pres,pct,st})=>`<div class="missao-card">
+          <div class="missao-card-top">
+            <div class="missao-card-title">${m.comunidade}</div>
+            <span class="badge ${st.cls}">${st.label}</span>
+          </div>
+          <div class="missao-card-info">${formatData(m.data)} · ${pres}/${total} presentes</div>
+          <div style="height:5px;background:var(--mid);border-radius:3px;margin-top:8px">
+            <div style="height:5px;background:var(--gold);border-radius:3px;width:${pct}%"></div>
+          </div>
+          <div style="text-align:right;font-size:12px;color:var(--gold);margin-top:4px">${pct}%</div>
+        </div>`).join('')}
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title">🏆 Ranking de Presenças</div>
+        ${rel.filter(g=>g.total_missoes>0).map(g=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(201,168,76,0.08)">
+            <span style="font-size:13px">${g.nome}</span>
+            <span class="badge badge-gold">${g.total_presencas}/${g.total_missoes}</span>
+          </div>`).join('') || '<div class="empty">Sem dados</div>'}
+      </div>`;
+  } catch(e) { toast('❌ Erro ao carregar relatórios'); }
+  finally { hideLoading(); }
+}
+
+// ══════════════════════════════════════════════
+//  MODAIS
+// ══════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+document.querySelectorAll('.modal-bg').forEach(bg=>{
+  bg.addEventListener('click', e=>{ if(e.target===bg){ bg.classList.remove('open'); document.body.style.overflow=''; }});
+});
+</script>
+</body>
+</html>
